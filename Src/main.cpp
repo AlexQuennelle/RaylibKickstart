@@ -6,7 +6,7 @@ int main()
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
-		ClearBackground(RAYWHITE);
+		ClearBackground({100, 149, 237, 255});
 		EndDrawing();
 	}
 
