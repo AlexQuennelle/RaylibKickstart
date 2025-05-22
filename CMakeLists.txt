@@ -8,11 +8,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+if("${CMAKE_GENERATOR}" STREQUAL "Visual Studio 17 2022")
+  message("Visual Studio Generator")
+else()
+  set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+endif()
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-O3;-ffast-math>")
 
 # Change this to match the name of the current folder
-project(RaylibKickstart LANGUAGES CXX C VERSION 0.0)
+project(TextEngine LANGUAGES CXX C VERSION 0.0)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 message("Build type: ${CMAKE_BUILD_TYPE}")
@@ -33,6 +37,15 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
   endif()
 endif()
+
+include(FetchContent)
+
+FetchContent_Declare(
+  yaml-cpp
+  GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
+  GIT_TAG 2f86d13
+)
+FetchContent_MakeAvailable(yaml-cpp)
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp")
 
@@ -60,7 +73,7 @@ target_compile_features("${CMAKE_PROJECT_NAME}" PRIVATE cxx_std_20)
 
 target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES} )
 
-target_link_libraries(${PROJECT_NAME} raylib)
+target_link_libraries(${PROJECT_NAME} raylib yaml-cpp::yaml-cpp)
 
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Include/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${PROJECT_BINARY_DIR}")
