@@ -76,9 +76,9 @@ target_compile_definitions(
 set_target_properties(
     "${CMAKE_PROJECT_NAME}" PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_DEBUG
-    "${CMAKE_CURRENT_SOURCE_DIR}/Bin"
+    "${CMAKE_CURRENT_SOURCE_DIR}/bin"
     RUNTIME_OUTPUT_DIRECTORY_RELEASE
-    "${CMAKE_CURRENT_SOURCE_DIR}/Bin/\
+    "${CMAKE_CURRENT_SOURCE_DIR}/bin/\
     ${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}"
 )
 if(EMSCRIPTEN)
@@ -105,7 +105,7 @@ target_compile_features("${CMAKE_PROJECT_NAME}" PRIVATE cxx_std_20)
 
 target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES} )
 
-target_link_libraries(${PROJECT_NAME} raylib yaml-cpp::yaml-cpp)
+target_link_libraries(${PROJECT_NAME} raylib)
 
 target_include_directories(
     "${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Include/"
