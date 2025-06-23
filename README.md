@@ -1,5 +1,7 @@
 # Raylib Kickstart
-This template repository offers a nice starting point for a simple raylib project with a plug-and-play cmakelistsfile that will automatically detect new source and header files. After creating a new repository based on this one, you should 
+This template repository offers a nice starting point for a simple raylib project with a plug-and-play cmakelistsfile that will automatically detect new source and header files. After creating a new repository based on this one, you should go to line 18 in [CMakeLists.txt](CMakeLists.txt) and change the name of the cmake project from RalyibKickstart.
+![image](https://github.com/user-attachments/assets/a21651ab-c1e8-45de-b161-7b9792145a93)
+
 
 ```bash
 read -p "Build type: " buildType
