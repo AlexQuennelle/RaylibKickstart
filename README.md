@@ -1,14 +1,50 @@
 # Raylib Kickstart
 This template repository offers a nice starting point for a simple raylib project with a plug-and-play cmakelistsfile that will automatically detect new source and header files. After creating a new repository based on this one, you should go to line 18 in [CMakeLists.txt](CMakeLists.txt) and change the name of the cmake project from RalyibKickstart.
-![image](https://github.com/user-attachments/assets/a21651ab-c1e8-45de-b161-7b9792145a93)
+![image](https://github.com/user-attachments/assets/a21651ab-c1e8-45de-b161-7b9792145a93)<br />
 The comment says to match the current folder(which in most cases will be the name of the repository) but it can really be anything. The reason for doing as the comment says is to allow the provided [build scripts](#how-to-build) to run the program after building.
 
 
 ## How To Build
-First, ensure you have a C and C++ compiler (clang or msvc on Windows, clang or gcc on Linux), as well as cmake and emscripten(for web builds) installed. Optionally, you can also install raylib locally, but cmake will install it for you on a per project basis if you don't.
+First, ensure you have a C and C++ compiler (clang on Windows, clang or gcc on Linux), as well as cmake and emscripten(for web builds) installed. Optionally, you can also install raylib locally, but cmake will install it for you on a per project basis if you don't.
+
+**NOTE**
+If you are using an IDE that uses visual studio project files such as VSCode, you can generate those project files by createing a folder called ***build*** inside the project folder, open a terminal inside of the build folder, and run `cmake .. -G "Visual Studio 17 2022"` \
+This will not allow web builds.
+
 ### Windows
 ```bat
 @echo off
+setlocal ENABLEDELAYEDEXPANSION
+set buildType=%1
+if "%~1" == "" set /p "buildType=Build type: "
+for %%a in ("%~dp0") do set "parent=%%~nxa"
+if not exist "bin" mkdir bin
+if /i "%buildType%" == "web" (
+	if not exist "build.web" mkdir build.web
+	cd build.web
+	echo Building WASM
+	emcmake cmake -DCMAKE_BUILD_TYPE=Release -DPLATFORM=Web ..
+	emmake make
+) else (
+	set "CMAKE_BUILD_TYPE_VAL="
+	if /i "%buildType%" == "release" (
+		set buildType="Release"
+	) else (
+		set buildType="Debug"
+	)
+	if not exist "build" mkdir "build"
+	cd build
+	cmake -DCMAKE_BUILD_TYPE="!buildType!" .. -G "Unix Makefiles"
+	echo Building Executable
+	make
+	if /i "!buildType!" == "Debug" (
+		cd ../bin
+		start %parent%
+	)
+)
+endlocal
+pause
+exit
 ```
 ### Linux
 To build a project created with this repository on linux, you should create a file called build.sh in the root directory of your project and add the following code:
