@@ -13,9 +13,12 @@ the program after building in debug mode.
 
 ## How To Build
 First, ensure you have a C and C++ compiler (clang on Windows, clang or gcc on
-Linux), as well as cmake and emscripten(for web builds) installed. Optionally,
-you can also install raylib locally, but cmake will install it for you on a
-per project basis if you don't.
+Linux), as well as cmake and emscripten(for web builds) installed.
+You will also need Make installed for Linux, and Ninja build installed for
+Windows.
+
+Optionally, you can also install raylib locally, but cmake will
+install it for you on a per project basis if you don't.
 
 > [!NOTE]
 > If you are using an IDE that uses visual studio project files such as
