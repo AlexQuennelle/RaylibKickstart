@@ -21,7 +21,7 @@ per project basis if you don't.
 > If you are using an IDE that uses visual studio project files such as
 > VSCode, you can generate those project files by createing a folder called
 > 'build' inside the project folder, open a terminal inside of the build
-> folder, and run: `cmake .. -G "Visual Studio 17 2022"`
+> folder, and run: <nobr>`cmake .. -G "Visual Studio 17 2022"`<nobr/>
 
 > [!NOTE]
 > Web builds are not automated using the provided build script for windows
@@ -89,7 +89,7 @@ exit
 > [!TIP]
 > you can skip inputing the build type by adding it as a command line argument
 > I.E: `./build.sh debug`  
-> In customizable editors like Neovim, this can be used to automate building in
+> In scriptable editors like Neovim, this can be used to automate building in
 > debug mode similar to full IDEs like Visual Studio.
 
 Then run `./build.sh` or `start build.bat` from inside the project's root
