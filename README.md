@@ -21,7 +21,7 @@ per project basis if you don't.
 > If you are using an IDE that uses visual studio project files such as
 > VSCode, you can generate those project files by createing a folder called
 > 'build' inside the project folder, open a terminal inside of the build
-> folder, and run: <nobr>`cmake .. -G "Visual Studio 17 2022"`<nobr/>
+> folder, and run: <span style="white-space:nowrap">`cmake .. -G "Visual Studio 17 2022"`</span>
 
 > [!NOTE]
 > Web builds are not automated using the provided build script for windows
