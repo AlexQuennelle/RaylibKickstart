@@ -48,18 +48,8 @@ file(
 add_executable("${CMAKE_PROJECT_NAME}") 
 if(EMSCRIPTEN)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}\
-        --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/Src/template.html"
+ --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/Src/template.html"
     )
-    file(GLOB_RECURSE MODELS CONFIGURE_DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/Resources/*.vox"
-    )
-    foreach(MODEL ${MODELS})
-        get_filename_component(TRIMMED ${MODEL} NAME)
-        set_target_properties(
-            ${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS
-            "--preload-file ../Resources/${TRIMMED}@./Resources/${TRIMMED}"
-        )
-    endforeach()
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
     set_target_properties(
         ${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS
@@ -79,20 +69,20 @@ set_target_properties(
     "${CMAKE_CURRENT_SOURCE_DIR}/bin"
     RUNTIME_OUTPUT_DIRECTORY_RELEASE
     "${CMAKE_CURRENT_SOURCE_DIR}/bin/\
-    ${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}"
+${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}"
 )
 if(EMSCRIPTEN)
     set_target_properties(
         ${CMAKE_PROJECT_NAME} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY_RELEASE
         "${CMAKE_CURRENT_SOURCE_DIR}/bin/\
-        ${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}_web"
+${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}_web"
     )
 endif()
 
 
 set(RELEASE_RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/bin/\
-    ${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}/Resources/"
+${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}/Resources/"
 )
 set(DEBUG_RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Resources/")
 target_compile_definitions(
