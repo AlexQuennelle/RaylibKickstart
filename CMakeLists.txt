@@ -20,6 +20,8 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 message("Build type: ${CMAKE_BUILD_TYPE}")
 
+add_executable("${CMAKE_PROJECT_NAME}") 
+
 set(RAYLIB_VERSION 5.5)
 find_package(raylib ${RAYLIB_VERSION} QUIET)
 if (NOT raylib_FOUND)
@@ -38,14 +40,43 @@ if (NOT raylib_FOUND)
     endif()
 endif()
 
-include(FetchContent)
+set(IMGUI_VERSION 1.92.2)
+find_package(ImGui ${IMGUI_VERSION} QUIET)
+if(NOT ImGui_FOUND)
+    include(FetchContent)
+    FetchContent_Declare(
+        ImGui
+        GIT_REPOSITORY https://github.com/ocornut/imgui
+        GIT_TAG v${IMGUI_VERSION}
+    )
+    FetchContent_MakeAvailable(ImGui)
+    FetchContent_GetProperties(ImGui SOURCE_DIR IMGUI_DIR)
+    add_library(
+        ImGui STATIC
+        ${imgui_SOURCE_DIR}/imgui.cpp ${imgui_SOURCE_DIR}/imgui_draw.cpp
+        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+        ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    )
+    target_include_directories(ImGui INTERFACE ${imgui_SOURCE_DIR})
+endif()
 
-file(
-    GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS
+include(FetchContent)
+FetchContent_Declare(
+    rlImGui
+    GIT_REPOSITORY https://github.com/raylib-extras/rlImGui
+    GIT_TAG 4d8a618
+)
+FetchContent_MakeAvailable(rlImGui)
+FetchContent_GetProperties(rlImGui SOURCE_DIR RLIMGUI_DIR)
+
+add_library(rlImGui STATIC ${rlimgui_SOURCE_DIR}/rlImGui.cpp)
+target_link_libraries(rlImGui PRIVATE ImGui raylib)
+target_include_directories(rlImGui INTERFACE ${rlimgui_SOURCE_DIR})
+
+file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
-add_executable("${CMAKE_PROJECT_NAME}") 
 if(EMSCRIPTEN)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}\
  --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/src/template.html"
@@ -57,9 +88,7 @@ if(EMSCRIPTEN)
     )
 endif()
 target_compile_definitions(
-    ${CMAKE_PROJECT_NAME}
-    PUBLIC
-    $<$<CONFIG:Release>:PRODUCTION_BUILD>
+    ${CMAKE_PROJECT_NAME} PUBLIC $<$<CONFIG:Release>:PRODUCTION_BUILD>
     NAME="${CMAKE_PROJECT_NAME}"
 )
 
@@ -80,7 +109,6 @@ ${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}_web"
     )
 endif()
 
-
 set(RELEASE_RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/bin/\
 ${CMAKE_PROJECT_NAME}_${CMAKE_PROJECT_VERSION}/resources/"
 )
@@ -95,10 +123,10 @@ target_compile_features("${CMAKE_PROJECT_NAME}" PRIVATE cxx_std_20)
 
 target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES} )
 
-target_link_libraries(${PROJECT_NAME} raylib)
+target_link_libraries(${PROJECT_NAME} raylib ImGui rlImGui)
 
 target_include_directories(
-    "${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Include/"
+    "${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/"
 )
 target_include_directories(
     "${CMAKE_PROJECT_NAME}" PUBLIC "${PROJECT_BINARY_DIR}"
