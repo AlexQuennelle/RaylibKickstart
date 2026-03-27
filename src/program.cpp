@@ -5,14 +5,34 @@
 #include <iostream>
 #include <raylib.h>
 #include <rlImGui.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif // !__EMSCRIPTEN__
 
-Program::Program() : imguiIO(ImGui::GetIO())
+Program::Program()
 {
 	SetTextColor(INFO);
 	std::cout << "Initializing program\n";
 	ClearStyles();
 
-	imguiIO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	InitWindow(800, 800, NAME);
+	SetTargetFPS(60);
+	rlImGuiSetup(true);
+	this->imguiIO = &ImGui::GetIO();
+
+	imguiIO->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+}
+
+void Program::Run()
+{
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop_arg(WebLoop, this, 0, 1);
+#else
+	while (!WindowShouldClose())
+	{
+		this->Update();
+	}
+#endif
 }
 
 void Program::Update()
@@ -24,7 +44,15 @@ void Program::Update()
 	// defined draw loop to allow for debug visualizations.
 
 	// Draw loop start
-	ClearBackground({100, 149, 237, 255});
+	this->Draw();
+
+	rlImGuiEnd();
+	EndDrawing();
+}
+
+void Program::Draw() const
+{
+	ClearBackground({.r = 100, .g = 149, .b = 237, .a = 255});
 
 	// ImGui demo
 	bool open = true;
@@ -35,7 +63,10 @@ void Program::Update()
 		ImGui::Text("Text.");
 	}
 	ImGui::End();
+}
 
-	rlImGuiEnd();
-	EndDrawing();
+Program::~Program()
+{
+	rlImGuiShutdown();
+	CloseWindow();
 }

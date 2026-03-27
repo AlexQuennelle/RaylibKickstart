@@ -9,12 +9,26 @@ class Program
 {
 	public:
 	Program();
+	Program(const Program&) = delete;
+	Program(Program&&) = delete;
+	~Program();
 
-	/**
-	 * The program's main update loop. Should be called  from a loop in main().
-	 */
-	void Update();
+	void Run();
+
+	auto operator=(const Program&) -> Program& = delete;
+	auto operator=(Program&&) -> Program& = delete;
+
+#ifdef __EMSCRIPTEN__
+	friend void WebLoop(void* arg);
+#endif // __EMSCRIPTEN__
 
 	private:
-	ImGuiIO& imguiIO;
+	void Update();
+	void Draw() const;
+
+	ImGuiIO* imguiIO;
 };
+
+#ifdef __EMSCRIPTEN__
+void WebLoop(void* arg);
+#endif // __EMSCRIPTEN__
